@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Payroll Dashboard</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <div class="table-container">
+        <h1>Employee Payroll Dashboard</h1>
+
+        <!-- Stats Section -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <h3>Total Employees</h3>
+                <p>
+                    <%= stats.totalEmployees %>
+                </p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Salary</h3>
+                <p>₹<%= stats.totalSalary.toLocaleString() %>
+                </p>
+            </div>
+            <div class="stat-card">
+                <h3>Est. Tax</h3>
+                <p>₹<%= stats.totalTax.toLocaleString() %>
+                </p>
+            </div>
+        </div>
+
+        <!-- Controls Section: Search & Add -->
+        <div class="controls-container">
+            <form action="/" method="GET" class="search-form">
+                <input type="text" name="search" placeholder="Search by name or role..." value="<%= searchQuery %>">
+                <button type="submit">Search</button>
+                <% if (searchQuery) { %>
+                    <a href="/" class="clear-btn">Clear</a>
+                    <% } %>
+            </form>
+            <a href="/add" class="add-btn">+ Add Employee</a>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th class="salary-col">Basic Salary</th>
+                    <th class="salary-col">Tax (12%)</th>
+                    <th class="salary-col">Net Salary</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (employees.length> 0) { %>
+                    <% employees.forEach(employee=> {
+                        const tax = employee.salary * 0.12;
+                        const netSalary = employee.salary - tax;
+                        %>
+                        <tr>
+                            <td>
+                                <%= employee.id %>
+                            </td>
+                            <td>
+                                <%= employee.name %>
+                            </td>
+                            <td>
+                                <%= employee.role %>
+                            </td>
+                            </td>
+                            <td class="salary-col">₹<%= employee.salary.toLocaleString() %>
+                            </td>
+                            <td class="salary-col">₹<%= tax.toLocaleString() %>
+                            </td>
+                            <td class="salary-col">₹<%= netSalary.toLocaleString() %>
+                            </td>
+                            <td>
+                                <a href="/edit/<%= employee.id %>" class="action-btn edit-btn">Edit</a>
+                                <a href="/delete/<%= employee.id %>" class="action-btn delete-btn"
+                                    onclick="return confirm('Are you sure?')">Delete</a>
+                            </td>
+                        </tr>
+                        <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="7" class="empty-state">
+                                        <p>No employees found matching your criteria.</p>
+                                        <% if (searchQuery) { %>
+                                            <a href="/">Clear Search</a>
+                                            <% } else { %>
+                                                <a href="/add">Add your first employee</a>
+                                                <% } %>
+                                    </td>
+                                </tr>
+                                <% } %>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
